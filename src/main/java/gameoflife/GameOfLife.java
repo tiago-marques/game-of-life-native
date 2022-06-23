@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
+import com.oracle.svm.core.thread.Continuations;
 
 public class GameOfLife {
 
@@ -48,7 +49,7 @@ public class GameOfLife {
 
     void start() {
         cells.forEach(Cell::start);
-        Thread.startVirtualThread(this::run);
+        Continuations.virtualThreadFactory().newThread(this::run).start();
     }
 
     private void run() {

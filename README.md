@@ -1,6 +1,6 @@
 ## Game of Life CSP
 
-Game of Life CSP is a Java implementation of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
+Game of Life CSP is a Java implementation by @ebarlas on GitHub, of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
 using [communicating sequential processes (CSP)](https://en.wikipedia.org/wiki/Communicating_sequential_processes). 
 
 Each grid cell is an independent process and all cell communication occurs via channels.
@@ -15,39 +15,30 @@ Prior to Project Loom and virtual threads, CSP style programming in this manner 
 
 # Build
 
-A [Project Loom](https://jdk.java.net/loom/) or [OpenJDK 19](https://jdk.java.net/19/) early access build is required at the time of writing.
+GraalVM 22.2 or later is required.
 
 ---
-Build with `mvn`:
+Build JAR with `mvn`:
 ```
-mvn compile
+mvn package
+```
+
+Build native image with GraalVM (adjust parallelism to your machine's number of hardware threads or cores):
+```
+native-image -cp target/csp-game-of-life-1.0.0-SNAPSHOT.jar -H:+SupportContinuations -Djdk.virtualThreadScheduler.parallelism=16 --add-exports org.graalvm.nativeimage.builder/com.oracle.svm.core.thread=ALL-UNNAMED gameoflife.Main
 ```
 
 Run:
 ```
-java --enable-preview -cp target/classes/ gameoflife.Main
+./gameoflife.main
 ```
-
----
-Compile with `javac`:
-```
-javac --enable-preview -source 19 src/main/java/gameoflife/*.java -d build/
-```
-
-Run:
-```
-java --enable-preview -cp build/ gameoflife.Main
-```
-
----
-![Gosper Glider Gun](images/gosper-glider-gun.gif)
 
 ## Command Line Arguments
 
 Command line arguments are optional.
 
 ```
-java --enable-preview -cp target/classes/ gameoflife.Main patterns/spaceship.txt 1800 1200 20 50 50 5 5 false true
+./gameoflife.main patterns/spaceship.txt 1800 1200 20 50 50 5 5 false true
 ```
 
 1. Pattern text file, ex. `patterns/spaceship.txt`
@@ -111,9 +102,7 @@ The following command results in a grid of 50,000 cells (250 x 200):
 That results in `50,002` virtual threads and `497,305` channels.
 
 ```
-java --enable-preview -cp target/classes/ gameoflife.Main patterns/puffer_train.txt 1600 800 0 235 91 10 91 true true
+./gameoflife.main patterns/puffer_train.txt 1600 800 0 235 91 10 91 true true
 ```
 
 It's a demonstration of the viability of virtual threads in a highly concurrent, computationally intensive application.
-
-![Puffer Train](images/puffer-train.gif)

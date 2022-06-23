@@ -1,6 +1,7 @@
 package gameoflife;
 
 import java.util.List;
+import com.oracle.svm.core.thread.Continuations;
 
 public class Cell {
     private boolean alive;
@@ -19,7 +20,7 @@ public class Cell {
     }
 
     void start() {
-        Thread.startVirtualThread(this::run);
+        Continuations.virtualThreadFactory().newThread(this::run).start();
     }
 
     private void run() {

@@ -47,7 +47,7 @@ public class Main {
         var width = (int) (scale * dimensions.cols());
         var height = (int) (scale * dimensions.rows());
         System.out.printf("rows=%d, columns=%d, width=%d, height=%d\n", dimensions.rows(), dimensions.cols(), width, height);
-        Consumer<boolean[][]> consumer = new WindowOutput(width, height, a.logRate);
+        Consumer<boolean[][]> consumer = new CountingOutput();
 
         while (true) {
             consumer.accept(gridChannel.take());

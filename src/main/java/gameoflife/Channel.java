@@ -1,10 +1,9 @@
 package gameoflife;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 
 public class Channel<T> {
-    private final BlockingQueue<T> queue = new LinkedBlockingQueue<>();
+    private final LinkedBlockingDeque<T> queue = new LinkedBlockingDeque<>();
 
     T take() {
         try {

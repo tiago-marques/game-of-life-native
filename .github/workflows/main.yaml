@@ -1,0 +1,51 @@
+name: Build with GraalVM Native Image
+on: [push]
+env:
+  MX_PYTHON: python3.8
+jobs:
+  build:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Build JDK19-based GraalVM Native Image from source
+        run: |
+          git clone --depth 1 https://github.com/oracle/graal.git
+          git clone --depth 1 https://github.com/graalvm/mx.git
+          export MX_EXEC="$(pwd)/mx/mx"
+
+          ${MX_EXEC} --java-home= fetch-jdk --jdk-id labsjdk-ce-19 --alias "${HOME}/jdk"
+          JAVA_HOME_SUFFIX="" && [[ "$(uname -s | tr '[:upper:]' '[:lower:]')" == "darwin" ]] && JAVA_HOME_SUFFIX="/Contents/Home"
+          export JAVA_HOME="${HOME}/jdk${JAVA_HOME_SUFFIX}"
+          echo "JAVA_HOME=${JAVA_HOME}" >> $GITHUB_ENV
+
+          pushd graal/substratevm > /dev/null
+          ${MX_EXEC} build
+          echo "GRAALVM_HOME=$(${MX_EXEC} graalvm-home)" >> $GITHUB_ENV
+          popd > /dev/null
+
+      - name: Build native Game of Life CSP
+        run: |
+          mvn --no-transfer-progress -Pnative package
+          cp ./target/csp-game-of-life ./
+
+      - name: Run native Game of Life CSP
+        run: timeout 0.2s ./csp-game-of-life || true
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: csp-game-of-life-${{ matrix.os }}
+          path: |
+            csp-game-of-life
+            patterns/*

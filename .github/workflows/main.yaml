@@ -38,9 +38,10 @@ jobs:
           mvn --no-transfer-progress -Pnative package
           cp ./target/csp-game-of-life ./
 
-      - name: Run native Game of Life CSP
-        run: timeout 0.2s ./csp-game-of-life || true
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+      - name: Run JIT vs. native Game of Life CSP
+        run: |
+          $GRAALVM_HOME/bin/java --enable-preview -cp target/classes/ gameoflife.Main patterns/puffer_train.txt 0 10 91 10 91 true true
+          ./csp-game-of-life patterns/puffer_train.txt 0 10 91 10 91 true true
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2

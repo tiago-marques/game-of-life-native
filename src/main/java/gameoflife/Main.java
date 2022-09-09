@@ -39,7 +39,7 @@ public class Main {
         GameOfLife game = new GameOfLife(dimensions, pattern, a.periodMilliseconds, gridChannel);
         game.start();
 
-        Consumer<boolean[][]> consumer = a.logRate ? new CountingOutput() : new ConsoleOutput();
+        Consumer<boolean[][]> consumer = a.logRate ? new CountingOutput(game.numThreads()) : new ConsoleOutput();
 
         while (true) {
             consumer.accept(gridChannel.take());

@@ -7,8 +7,6 @@ public class Main {
 
     record Args(
             String patternFile,
-            int maxWindowWidth,
-            int maxWindowHeight,
             int periodMilliseconds,
             int leftPadding,
             int topPadding,
@@ -19,15 +17,13 @@ public class Main {
         static Args parse(String[] args) {
             return new Args(
                     args.length > 0 ? args[0] : "patterns/gosper_glider_gun.txt",
-                    args.length > 1 ? Integer.parseInt(args[1]) : 640,
-                    args.length > 2 ? Integer.parseInt(args[2]) : 480,
-                    args.length > 3 ? Integer.parseInt(args[3]) : 20,
-                    args.length > 4 ? Integer.parseInt(args[4]) : 2,
-                    args.length > 5 ? Integer.parseInt(args[5]) : 2,
-                    args.length > 6 ? Integer.parseInt(args[6]) : 20,
-                    args.length > 7 ? Integer.parseInt(args[7]) : 20,
-                    args.length > 8 ? Boolean.parseBoolean(args[8]) : false,
-                    args.length > 9 ? Boolean.parseBoolean(args[9]) : false);
+                    args.length > 1 ? Integer.parseInt(args[1]) : 20,
+                    args.length > 2 ? Integer.parseInt(args[2]) : 2,
+                    args.length > 3 ? Integer.parseInt(args[3]) : 2,
+                    args.length > 4 ? Integer.parseInt(args[4]) : 20,
+                    args.length > 5 ? Integer.parseInt(args[5]) : 20,
+                    args.length > 6 ? Boolean.parseBoolean(args[6]) : false,
+                    args.length > 7 ? Boolean.parseBoolean(args[7]) : false);
         }
     }
 
@@ -43,23 +39,11 @@ public class Main {
         GameOfLife game = new GameOfLife(dimensions, pattern, a.periodMilliseconds, gridChannel);
         game.start();
 
-        double scale = calculateScale(dimensions.rows(), dimensions.cols(), a.maxWindowWidth, a.maxWindowHeight);
-        var width = (int) (scale * dimensions.cols());
-        var height = (int) (scale * dimensions.rows());
-        // System.out.printf("rows=%d, columns=%d, width=%d, height=%d\n", dimensions.rows(), dimensions.cols(), width, height);
-        Consumer<boolean[][]> consumer = new ConsoleOutput();
+        Consumer<boolean[][]> consumer = a.logRate ? new CountingOutput() : new ConsoleOutput();
 
         while (true) {
             consumer.accept(gridChannel.take());
         }
-    }
-
-    private static double calculateScale(int rows, int cols, int maxWindowWidth, int maxWindowHeight) {
-        double aspect = (double) maxWindowWidth / maxWindowHeight;
-        double actual = (double) cols / rows;
-        return actual < aspect
-                ? (double) maxWindowHeight / rows
-                : (double) maxWindowWidth / cols;
     }
 
 }

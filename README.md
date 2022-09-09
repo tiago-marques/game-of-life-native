@@ -32,19 +32,17 @@ Run:
 Command line arguments are optional.
 
 ```
-./target/csp-game-of-life patterns/spaceship.txt 1800 1200 20 50 50 5 5 false true
+./target/csp-game-of-life patterns/spaceship.txt 20 50 50 5 5 false true
 ```
 
 1. Pattern text file, ex. `patterns/spaceship.txt`
-2. Maximum window width, ex. `1800`
-3. Maximum window height, ex. `1200`
-4. Game of Life simulation period milliseconds, ex. `25`
-5. Left padding columns, ex. `50`
-6. Top padding rows, ex. `50`
-7. Right padding columns, ex. `5`
-8. Bottom padding rows, ex. `5`
-9. Rotate boolean flag, ex. `false`
-10. Log rate boolean flag, ex. `true`
+2. Game of Life simulation period milliseconds, ex. `25`
+3. Left padding columns, ex. `50`
+4. Top padding rows, ex. `50`
+5. Right padding columns, ex. `5`
+6. Bottom padding rows, ex. `5`
+7. Rotate boolean flag, ex. `false`
+8. Log rate boolean flag, ex. `true`
 
 ## Patterns
 
@@ -96,7 +94,7 @@ The following command results in a grid of 50,000 cells (250 x 200):
 That results in `50,002` virtual threads and `497,305` channels.
 
 ```
-./target/csp-game-of-life patterns/puffer_train.txt 1600 800 0 235 91 10 91 true true
+./target/csp-game-of-life patterns/puffer_train.txt 0 235 91 10 91 true true
 ```
 
 It's a demonstration of the viability of virtual threads in a highly concurrent, computationally intensive application.

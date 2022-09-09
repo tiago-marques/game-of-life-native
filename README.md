@@ -15,22 +15,16 @@ Prior to Project Loom and virtual threads, CSP style programming in this manner 
 
 # Build
 
-GraalVM 22.3 or later is required (set `JAVA_HOME` to its installation directory).
+> JDK19-based GraalVM Native Image 22.3 or later is required (set `JAVA_HOME` to its installation directory).
 
----
-Build JAR with `mvn`:
+Build native executable with GraalVM Native Image:
 ```
-mvn package
-```
-
-Build GraalVM native image executable:
-```
-native-image -J--enable-preview -cp target/csp-game-of-life-1.0.0-SNAPSHOT.jar gameoflife.Main
+mvn -Pnative package
 ```
 
 Run:
 ```
-./gameoflife.main
+./target/csp-game-of-life
 ```
 
 ## Command Line Arguments
@@ -38,7 +32,7 @@ Run:
 Command line arguments are optional.
 
 ```
-./gameoflife.main patterns/spaceship.txt 1800 1200 20 50 50 5 5 false true
+./target/csp-game-of-life patterns/spaceship.txt 1800 1200 20 50 50 5 5 false true
 ```
 
 1. Pattern text file, ex. `patterns/spaceship.txt`
@@ -102,7 +96,7 @@ The following command results in a grid of 50,000 cells (250 x 200):
 That results in `50,002` virtual threads and `497,305` channels.
 
 ```
-./gameoflife.main patterns/puffer_train.txt 1600 800 0 235 91 10 91 true true
+./target/csp-game-of-life patterns/puffer_train.txt 1600 800 0 235 91 10 91 true true
 ```
 
 It's a demonstration of the viability of virtual threads in a highly concurrent, computationally intensive application.
